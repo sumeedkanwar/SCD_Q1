@@ -1,0 +1,8 @@
+name: Ci/CD Work flow
+
+on:
+ push:
+ branches:
+ - main
+
+ 
