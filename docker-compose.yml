@@ -1,0 +1,93 @@
+version: "3.8"
+
+services:
+  # MongoDB Service
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
+  # Auth Service
+  auth-service:
+    build:
+      context: ./Auth Service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - MONGO_URI=mongodb+srv://sumeed:sigmatyler@leap.o3z6i.mongodb.net/LEAP
+      - JWT_SECRET=SecretKey
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  # Blog Service
+  blog-service:
+    build:
+      context: ./Blog Service
+      dockerfile: Dockerfile
+    container_name: blog-service
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - MONGO_URI=mongodb+srv://sumeed:sigmatyler@leap.o3z6i.mongodb.net/LEAP
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  # Comment Service
+  comment-service:
+    build:
+      context: ./Comment Service
+      dockerfile: Dockerfile
+    container_name: comment-service
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3003
+      - MONGO_URI=mongodb+srv://sumeed:sigmatyler@leap.o3z6i.mongodb.net/LEAP
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  # Profile Service
+  profile-service:
+    build:
+      context: ./Profile Service
+      dockerfile: Dockerfile
+    container_name: profile-service
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3004
+      - MONGO_URI=mongodb+srv://sumeed:sigmatyler@leap.o3z6i.mongodb.net/LEAP
+    ports:
+      - "3004:3004"
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
